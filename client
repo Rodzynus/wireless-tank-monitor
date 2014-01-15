@@ -1,0 +1,33 @@
+local tArgs = { ... }
+local receiverID = tonumber(tArgs[1])
+local modemSide = tArgs[2]
+local tankSide = tArgs[3]
+local id = os.getComputerID()
+
+rednet.open(modemSide)
+local tank = peripheral.wrap(tankSide)
+local lastLiquidStatus = 0
+while true do
+	local tankTableFin = {}
+	local tankTable = tank.getTanks(tankSide)
+	local liquidStored = tankTable[1]["amount"] or 0
+	local maxLiquidStored = tankTable[1]["capacity"]
+	local liquidInPercent = (liquidStored/maxLiquidStored)*100
+	local liquidDifference = liquidStored - lastLiquidStatus
+	lastLiquidStatus = liquidStored
+	
+	tankTableFin[1] = tankTable[1]["name"] or "Zbiornik pusty"
+	tankTableFin[2] = tostring(math.floor(liquidStored))
+	tankTableFin[3] = tostring(math.floor(maxLiquidStored))
+	tankTableFin[4] = tostring(math.floor(liquidInPercent)) .. "%"
+	if liquidDifference >= 0 then
+		tankTableFin[5] = tostring(math.abs(math.floor(liquidDifference/100))) .. " mB/t zysku"
+	else
+		tankTableFin[5] = tostring(math.abs(math.floor(liquidDifference/100))) .. " MB/t straty"
+	end
+	
+	tankTableFin["id"] = tostring(id)
+	
+	rednet.send(receiverID, textutils.serialize(tankTableFin))
+	sleep(5)
+end

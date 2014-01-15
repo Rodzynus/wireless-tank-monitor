@@ -1,0 +1,76 @@
+tArgs = { ... }
+local modemSide = tArgs[1]
+local monSide = tArgs[2]
+rednet.open(modemSide)
+local mon = peripheral.wrap(monSide)
+local sizeX, sizeY = mon.getSize()
+local cells = {}
+
+local function clearLines(cStart, cEnd)
+	for i = cStart, cEnd do
+		mon.setCursorPos(1, i)
+		mon.clearLine()
+	end
+	mon.setCursorPos(1, cStart)
+end
+
+local function findCell(id)
+	for k, v in pairs(cells) do
+		if v["id"] == tostring(id) then
+			return k
+		end
+	end
+	return nil
+end
+
+local function printCellInfo(tab, startPos)
+	clearLines(startPos, startPos+4)
+	if mon.isColor() then
+		if tab[1] == "Lava" then mon.setTextColor(colors.red)
+		elseif tab[1] == "Honey" then mon.setTextColor(colors.yellow)
+		elseif tab[1] == "Liquid DNA" then mon.setTextColor(colors.purple)
+		elseif tab[1] == "Seed Oil" then mon.setTextColor(colors.yellow)
+		elseif tab[1] == "Oil" then mon.setTextColor(colors.black)
+		elseif tab[1] == "Fuel" then mon.setTextColor(colors.yellow)
+		end
+	end
+	mon.setCursorPos(math.floor((sizeX-#tab[1])/2) ,startPos)
+	mon.write(tab[1])
+	if mon.isColor() then mon.setTextColor(colors.white) end
+	
+	mon.setCursorPos(1, startPos+1)
+	mon.write("Przechowuje:")
+	mon.setCursorPos(sizeX/2, startPos+1)
+	mon.write(math.floor(tab[2]/1000) .. " B")
+	
+	mon.setCursorPos(1, startPos+2)
+	mon.write("Pojemnosc:")
+	mon.setCursorPos(sizeX/2, startPos+2)
+	mon.write(math.floor(tab[3]/1000) .. " B")
+	
+	mon.setCursorPos(1, startPos+3)
+	mon.write("Wypelnienie:")
+	mon.setCursorPos(sizeX/2, startPos+3)
+	mon.write(tab[4])
+	
+	mon.setCursorPos(1, startPos+4)
+	mon.write("Zmiana:")
+	mon.setCursorPos(sizeX/2, startPos+4)
+	mon.write(tab[5])
+	
+	mon.setCursorPos(1, startPos+4)
+end
+
+mon.clear()
+while true do
+	local _, id, message = os.pullEvent("rednet_message")
+	local cellID = findCell(id)
+	local msg
+		if cellID then
+			cells[cellID] = textutils.unserialize(message)
+		else
+			cells[#cells+1] = textutils.unserialize(message)
+			cellID = #cells
+		end
+	printCellInfo(cells[cellID], (cellID-1)*6+1)
+end
