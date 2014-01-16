@@ -15,9 +15,9 @@ local function comma_value(amount)
 end
 
 local function main()
-	local receiverID = tonumber(tArgs[1])
-	local modemSide = tArgs[2]
-	local tankSide = tArgs[3]
+	local receiverID = assert(tonumber(tArgs[1]), assertMsg)
+	local modemSide = assert(tArgs[2], assertMsg)
+	local tankSide = assert(tArgs[3], assertMsg)
 	local id = os.getComputerID()
 
 	rednet.open(modemSide)
