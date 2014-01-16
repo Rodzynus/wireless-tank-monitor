@@ -6,9 +6,18 @@ local mon = peripheral.wrap(monSide)
 local sizeX, sizeY = mon.getSize()
 local cells = {}
 
+local messages = {
+	[1] = "";
+	[2] = "Przechowuje:";
+	[3] = "Pojemnosc:";
+	[4] = "Zapelniono:";
+	[5] = "Zuzycie:";
+}
+
 local function clearLines(cStart, cEnd)
 	for i = cStart, cEnd do
 		mon.setCursorPos(1, i)
+		mon.setBackgroundColor(colors.black)
 		mon.clearLine()
 	end
 	mon.setCursorPos(1, cStart)
@@ -21,6 +30,31 @@ local function findCell(id)
 		end
 	end
 	return nil
+end
+
+local function separator(Y)
+	mon.setCursorPos(1, Y)
+	for i = 1, sizeX do
+		mon.write("=")
+	end
+	mon.setCursorPos(1, Y+1)
+end
+
+local function indicator(tab, Y)
+	mon.setCursorPos(sizeX-1, Y)
+	if mon.isColor() then
+		if tab[1] == "Lava" then mon.setBackgroundColor(colors.red)
+		elseif tab[1] == "Honey" then mon.setBackgroundColor(colors.yellow)
+		elseif tab[1] == "Liquid DNA" then mon.setBackgroundColor(colors.purple)
+		elseif tab[1] == "Seed Oil" then mon.setBackgroundColor(colors.yellow)
+		elseif tab[1] == "Oil" then mon.setBackgroundColor(colors.black)
+		elseif tab[1] == "Fuel" then mon.setBackgroundColor(colors.yellow)
+		end
+	else
+		mon.setBackgroundColor(colors.white)
+	end
+	mon.write("  ")
+	mon.setBackgroundColor(colors.black)
 end
 
 local function printCellInfo(tab, startPos)
@@ -38,27 +72,22 @@ local function printCellInfo(tab, startPos)
 	mon.write(tab[1])
 	if mon.isColor() then mon.setTextColor(colors.white) end
 	
-	mon.setCursorPos(1, startPos+1)
-	mon.write("Przechowuje:")
-	mon.setCursorPos(sizeX/2, startPos+1)
-	mon.write(math.floor(tab[2]/1000) .. " B")
+	for k, v in ipairs(tab) do
+		if k ~= 1 then 
+			mon.setCursorPos(1, startPos+k-1)
+			mon.write(messages[k])
+			mon.setCursorPos(sizeX/2, startPos+k-1)
+			mon.write(tab[k])
+		end
+	end
 	
-	mon.setCursorPos(1, startPos+2)
-	mon.write("Pojemnosc:")
-	mon.setCursorPos(sizeX/2, startPos+2)
-	mon.write(math.floor(tab[3]/1000) .. " B")
+	for i = 1, 5 do
+		if tab[2]/tab[3]*100 > 100 - (20 * i) then
+			indicator(tab, startPos+i-1)
+		end
+	end
 	
-	mon.setCursorPos(1, startPos+3)
-	mon.write("Wypelnienie:")
-	mon.setCursorPos(sizeX/2, startPos+3)
-	mon.write(tab[4])
-	
-	mon.setCursorPos(1, startPos+4)
-	mon.write("Zmiana:")
-	mon.setCursorPos(sizeX/2, startPos+4)
-	mon.write(tab[5])
-	
-	mon.setCursorPos(1, startPos+4)
+	separator(startPos + #tab)
 end
 
 mon.clear()
