@@ -47,7 +47,7 @@ local function indicator(tab, Y)
 		elseif tab[1] == "Honey" then mon.setBackgroundColor(colors.yellow)
 		elseif tab[1] == "Liquid DNA" then mon.setBackgroundColor(colors.purple)
 		elseif tab[1] == "Seed Oil" then mon.setBackgroundColor(colors.yellow)
-		elseif tab[1] == "Oil" then mon.setBackgroundColor(colors.black)
+		elseif tab[1] == "Oil" then mon.setBackgroundColor(colors.gray)
 		elseif tab[1] == "Fuel" then mon.setBackgroundColor(colors.yellow)
 		end
 	else
@@ -64,7 +64,7 @@ local function printCellInfo(tab, startPos)
 		elseif tab[1] == "Honey" then mon.setTextColor(colors.yellow)
 		elseif tab[1] == "Liquid DNA" then mon.setTextColor(colors.purple)
 		elseif tab[1] == "Seed Oil" then mon.setTextColor(colors.yellow)
-		elseif tab[1] == "Oil" then mon.setTextColor(colors.black)
+		elseif tab[1] == "Oil" then mon.setTextColor(colors.gray)
 		elseif tab[1] == "Fuel" then mon.setTextColor(colors.yellow)
 		end
 	end
