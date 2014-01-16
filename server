@@ -81,9 +81,12 @@ local function printCellInfo(tab, startPos)
 		end
 	end
 	
-	for i = 1, 5 do
-		if tab[2]/tab[3]*100 > 100 - (20 * i) then
-			indicator(tab, startPos+i-1)
+	for i = 1, 4 do
+		if tonumber(string.match(tab[4], "%d+")) >= 99 then
+			indicator(tab, startPos)
+		end
+		if tonumber(string.match(tab[4], "%d+")) > 100 - (20 * i) then
+			indicator(tab, startPos+i)
 		end
 	end
 	
