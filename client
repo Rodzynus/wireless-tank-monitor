@@ -40,8 +40,8 @@ local function main()
 		lastLiquidStatus = liquidStored
 		
 		tankTableFin[1] = tankTable[1]["name"] or "Zbiornik pusty"
-		tankTableFin[2] = tostring(comma_value((math.floor(liquidStored)/1000))) .. " B"
-		tankTableFin[3] = tostring(comma_value((math.floor(maxLiquidStored)/1000))) .. " B"
+		tankTableFin[2] = tostring(comma_value(math.floor(liquidStored/1000))) .. " B"
+		tankTableFin[3] = tostring(comma_value(math.floor(maxLiquidStored/1000))) .. " B"
 		tankTableFin[4] = tostring(math.floor(liquidInPercent)) .. "%"
 		if liquidDifference >= 0 then
 			tankTableFin[5] = tostring(math.abs(math.floor(liquidDifference/100))) .. " mB/t zysku"
