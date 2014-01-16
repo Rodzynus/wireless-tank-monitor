@@ -4,6 +4,76 @@ local modemSide = tArgs[2]
 local tankSide = tArgs[3]
 local id = os.getComputerID()
 
+-- from sam_lie
+-- Compatible with Lua 5.0 and 5.1.
+-- Disclaimer : use at own risk especially for hedge fund reports :-)
+
+---============================================================
+-- add comma to separate thousands
+-- 
+local function comma_value(amount)
+  local formatted = amount
+  while true do  
+    formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1.%2')
+    if (k==0) then
+      break
+    end
+  end
+  return formatted
+end
+---============================================================
+-- rounds a number to the nearest decimal places
+--
+local function round(val, decimal)
+  if (decimal) then
+    return math.floor( (val * 10^decimal) + 0.5) / (10^decimal)
+  else
+    return math.floor(val+0.5)
+  end
+end
+
+--===================================================================
+-- given a numeric value formats output with comma to separate thousands
+-- and rounded to given decimal places
+--
+--
+local function format_num(amount, decimal, prefix, neg_prefix)
+  local str_amount,  formatted, famount, remain
+
+  decimal = decimal or 2  -- default 2 decimal places
+  neg_prefix = neg_prefix or "-" -- default negative sign
+
+  famount = math.abs(round(amount,decimal))
+  famount = math.floor(famount)
+
+  remain = round(math.abs(amount) - famount, decimal)
+
+        -- comma to separate the thousands
+  formatted = comma_value(famount)
+
+        -- attach the decimal portion
+  if (decimal > 0) then
+    remain = string.sub(tostring(remain),3)
+    formatted = formatted .. "." .. remain ..
+                string.rep("0", decimal - string.len(remain))
+  end
+
+        -- attach prefix string e.g '$' 
+  formatted = (prefix or "") .. formatted 
+
+        -- if value is negative then format accordingly
+  if (amount<0) then
+    if (neg_prefix=="()") then
+      formatted = "("..formatted ..")"
+    else
+      formatted = neg_prefix .. formatted 
+    end
+  end
+
+  return formatted
+end
+------------------------------------------------------------
+
 rednet.open(modemSide)
 local tank = peripheral.wrap(tankSide)
 local lastLiquidStatus = 0
@@ -17,8 +87,8 @@ while true do
 	lastLiquidStatus = liquidStored
 	
 	tankTableFin[1] = tankTable[1]["name"] or "Zbiornik pusty"
-	tankTableFin[2] = tostring(math.floor(liquidStored)/1000) .. " B"
-	tankTableFin[3] = tostring(math.floor(maxLiquidStored)/1000) .. " B"
+	tankTableFin[2] = tostring(format_num(math.floor(liquidStored)/1000, 0)) .. " B"
+	tankTableFin[3] = tostring(format_num(math.floor(maxLiquidStored)/1000, 0)) .. " B"
 	tankTableFin[4] = tostring(math.floor(liquidInPercent)) .. "%"
 	if liquidDifference >= 0 then
 		tankTableFin[5] = tostring(math.abs(math.floor(liquidDifference/100))) .. " mB/t zysku"
