@@ -78,7 +78,7 @@ local function printCellInfo(tab, startPos)
 		mon.setCursorPos(1, startPos+k)
 		mon.write(messages[k])
 		mon.setCursorPos(sizeX/2, startPos+k)
-		if i == 1 then setColour(tab[2]) end
+		if i == 1 then setColour(tab[1]) end
 		mon.write(tab[k])
 		mon.setTextColor(colors.white)
 	end
@@ -87,7 +87,7 @@ local function printCellInfo(tab, startPos)
 		if tonumber(string.match(tab[4], "%d+")) >= 99 then
 			indicator(tab, startPos)
 		end
-		if tonumber(string.match(tab[4], "%d+")) > 100 - ((100/#tab+1) * i) then
+		if tonumber(string.match(tab[4], "%d+")) > 100 - (20 * i) then
 			indicator(tab, startPos+i)
 		end
 	end
