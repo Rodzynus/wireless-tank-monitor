@@ -70,7 +70,7 @@ local function setColour(liquidName)
 end
 
 local function printCellInfo(tab, startPos)
-	clearLines(startPos, startPos+4)
+	clearLines(startPos, startPos+#tab+1)
 	mon.setCursorPos(math.floor((sizeX-#tab["name"])/2) ,startPos)
 	mon.write(tab["name"])
 	
@@ -106,5 +106,5 @@ while true do
 			cells[#cells+1] = textutils.unserialize(message)
 			cellID = #cells
 		end
-	printCellInfo(cells[cellID], (cellID-1)*6+1)
+	printCellInfo(cells[cellID], (cellID-1)*7+1)
 end
