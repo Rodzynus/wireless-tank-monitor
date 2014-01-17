@@ -7,7 +7,7 @@ local sizeX, sizeY = mon.getSize()
 local cells = {}
 
 local messages = {
-	[1] = "";
+	[1] = "Zawartosc:";
 	[2] = "Przechowuje:";
 	[3] = "Pojemnosc:";
 	[4] = "Zapelniono:";
@@ -57,35 +57,37 @@ local function indicator(tab, Y)
 	mon.setBackgroundColor(colors.black)
 end
 
-local function printCellInfo(tab, startPos)
-	clearLines(startPos, startPos+4)
+local function setColour(liquidName)
 	if mon.isColor() then
-		if tab[1] == "Lava" then mon.setTextColor(colors.red)
-		elseif tab[1] == "Honey" then mon.setTextColor(colors.yellow)
-		elseif tab[1] == "Liquid DNA" then mon.setTextColor(colors.purple)
-		elseif tab[1] == "Seed Oil" then mon.setTextColor(colors.yellow)
-		elseif tab[1] == "Oil" then mon.setTextColor(colors.white)
-		elseif tab[1] == "Fuel" then mon.setTextColor(colors.yellow)
+		if liquidName == "Lava" then mon.setTextColor(colors.red)
+		elseif liquidName == "Honey" then mon.setTextColor(colors.yellow)
+		elseif liquidName == "Liquid DNA" then mon.setTextColor(colors.purple)
+		elseif liquidName == "Seed Oil" then mon.setTextColor(colors.yellow)
+		elseif liquidName == "Oil" then mon.setTextColor(colors.white)
+		elseif liquidName == "Fuel" then mon.setTextColor(colors.yellow)
 		end
 	end
+end
+
+local function printCellInfo(tab, startPos)
+	clearLines(startPos, startPos+4)
 	mon.setCursorPos(math.floor((sizeX-#tab[1])/2) ,startPos)
 	mon.write(tab[1])
-	if mon.isColor() then mon.setTextColor(colors.white) end
 	
 	for k, v in ipairs(tab) do
-		if k ~= 1 then 
-			mon.setCursorPos(1, startPos+k-1)
-			mon.write(messages[k])
-			mon.setCursorPos(sizeX/2, startPos+k-1)
-			mon.write(tab[k])
-		end
+		mon.setCursorPos(1, startPos+k)
+		mon.write(messages[k])
+		mon.setCursorPos(sizeX/2, startPos+k)
+		if i == 1 then setColour(tab[2]) end
+		mon.write(tab[k])
+		mon.setTextColor(colors.white)
 	end
 	
 	for i = 1, 4 do
 		if tonumber(string.match(tab[4], "%d+")) >= 99 then
 			indicator(tab, startPos)
 		end
-		if tonumber(string.match(tab[4], "%d+")) > 100 - (20 * i) then
+		if tonumber(string.match(tab[4], "%d+")) > 100 - ((100/#tab+1) * i) then
 			indicator(tab, startPos+i)
 		end
 	end
