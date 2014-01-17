@@ -92,7 +92,7 @@ local function printCellInfo(tab, startPos)
 		end
 	end
 	
-	separator(startPos + #tab)
+	separator(startPos + #tab+1)
 end
 
 mon.clear()
