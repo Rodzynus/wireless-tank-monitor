@@ -43,12 +43,12 @@ end
 local function indicator(tab, Y)
 	mon.setCursorPos(sizeX-1, Y)
 	if mon.isColor() then
-		if tab[2] == "Lava" then mon.setBackgroundColor(colors.red)
-		elseif tab[2] == "Honey" then mon.setBackgroundColor(colors.yellow)
-		elseif tab[2] == "Liquid DNA" then mon.setBackgroundColor(colors.purple)
-		elseif tab[2] == "Seed Oil" then mon.setBackgroundColor(colors.yellow)
-		elseif tab[2] == "Oil" then mon.setBackgroundColor(colors.white)
-		elseif tab[2] == "Fuel" then mon.setBackgroundColor(colors.yellow)
+		if tab[1] == "Lava" then mon.setBackgroundColor(colors.red)
+		elseif tab[1] == "Honey" then mon.setBackgroundColor(colors.yellow)
+		elseif tab[1] == "Liquid DNA" then mon.setBackgroundColor(colors.purple)
+		elseif tab[1] == "Seed Oil" then mon.setBackgroundColor(colors.yellow)
+		elseif tab[1] == "Oil" then mon.setBackgroundColor(colors.white)
+		elseif tab[1] == "Fuel" then mon.setBackgroundColor(colors.yellow)
 		end
 	else
 		mon.setBackgroundColor(colors.white)
@@ -71,8 +71,8 @@ end
 
 local function printCellInfo(tab, startPos)
 	clearLines(startPos, startPos+4)
-	mon.setCursorPos(math.floor((sizeX-#tab[1])/2) ,startPos)
-	mon.write(tab[1])
+	mon.setCursorPos(math.floor((sizeX-#tab["name"])/2) ,startPos)
+	mon.write(tab["name"])
 	
 	for k, v in ipairs(tab) do
 		mon.setCursorPos(1, startPos+k)
@@ -83,7 +83,7 @@ local function printCellInfo(tab, startPos)
 		mon.setTextColor(colors.white)
 	end
 	
-	for i = 1, 4 do
+	for i = 1, #tab do
 		if tonumber(string.match(tab[5], "%d+")) >= 99 then
 			indicator(tab, startPos)
 		end
