@@ -19,7 +19,7 @@ local function main()
 	local modemSide = assert(tArgs[2], assertMsg)
 	local tankSide = assert(tArgs[3], assertMsg)
 	local id = os.getComputerID()
-	local tankName = os.getComputerLabel()
+	local tankName = os.getComputerLabel() or "Zbiornik"
 	
 	rednet.open(modemSide)
 	local tank = peripheral.wrap(tankSide)
